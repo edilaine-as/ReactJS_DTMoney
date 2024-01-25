@@ -25,7 +25,7 @@ export function Transactions() {
               <td>Alimentação</td>
               <td>10/04/2024</td>
             </tr>
-            <tr>
+            {/* <tr>
               <td width="58%">Aluguel do apartamento</td>
               <td><PriceHighLight variant='outcome'>- R$ 1.200,00</PriceHighLight></td>
               <td>Casa</td>
@@ -42,7 +42,7 @@ export function Transactions() {
               <td><PriceHighLight variant='income'>R$ 8.000,00</PriceHighLight></td>
               <td>Venda</td>
               <td>12/03/2024</td>
-            </tr>
+            </tr> */}
           </tbody>
         </TransactionsTable>
       </TransactionsContainer>

@@ -14,22 +14,22 @@ export const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`
 
-  button {
-    height: 50px;
-    padding: 0 1.25rem;
+export const NewTransactionButton = styled.button`
+  height: 50px;
+  padding: 0 1.25rem;
 
-    border: 0;
-    border-radius: 6px;
+  border: 0;
+  border-radius: 6px;
 
-    background-color: ${(props) => props.theme['green-500']};
-    color: ${(props) => props.theme.white};
-    font-weight: bold;
-    cursor: pointer;
+  background-color: ${(props) => props.theme['green-500']};
+  color: ${(props) => props.theme.white};
+  font-weight: bold;
+  cursor: pointer;
 
-    &:hover {
-      background-color: ${(props) => props.theme['green-700']};
-      transition: background-color 0.2s;
-    }
+  &:hover {
+    background-color: ${(props) => props.theme['green-700']};
+    transition: background-color 0.2s;
   }
 `
