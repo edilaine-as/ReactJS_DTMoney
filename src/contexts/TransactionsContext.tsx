@@ -8,11 +8,19 @@ interface Transaction {
     price: number;
     category: string
     createdAt: string;
-  }
+}
+
+interface CreateTransactionInput{
+    description: string;
+    price: number;
+    category: string;
+    type: 'income' | 'outcome';
+}
 
 interface TransactionContextType{
     transactions: Transaction[];
     fetchTransactions: (query?:string) => Promise<void>; //promise porque é async
+    createTransactions: (data:CreateTransactionInput) => Promise<void>;
 }
 
 interface TransactionsProviderProps {
@@ -27,11 +35,28 @@ export function TransactionsProvider({children}: TransactionsProviderProps){
     async function fetchTransactions(query?: string){
         const response = await api.get('transactions', {
             params:{
-                q: query,
+                _sort: 'createdAt', //vem do json-server
+                _order: 'desc', //
+                q: query, //
             }
         })
 
         setTransactions(response.data)
+    }
+
+    async function createTransactions(data: CreateTransactionInput){
+        const {description, price, category, type} = data;
+
+        const response = await api.post('transactions', {
+            description,
+            price,
+            category,
+            type,
+            createdAt: new Date(),
+        })
+
+        setTransactions(state => [response.data, ...state]) //quando faço uma alteração que depende do valor anterior do estado, é bom utilizar callback
+
     }
 
     useEffect(() => {
@@ -42,7 +67,8 @@ export function TransactionsProvider({children}: TransactionsProviderProps){
         <TransactionsContext.Provider 
             value={{
                 transactions,
-                fetchTransactions
+                fetchTransactions,
+                createTransactions
             }}
         >
             {children}
