@@ -1,4 +1,5 @@
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState, useCallback } from 'react'
+import { createContext } from 'use-context-selector'
 import { api } from '../lib/axios'
 
 interface Transaction {
@@ -20,7 +21,7 @@ interface CreateTransactionInput {
 interface TransactionContextType {
   transactions: Transaction[]
   fetchTransactions: (query?: string) => Promise<void> // promise porque é async
-  createTransactions: (data: CreateTransactionInput) => Promise<void>
+  createTransaction: (data: CreateTransactionInput) => Promise<void>
 }
 
 interface TransactionsProviderProps {
@@ -34,7 +35,7 @@ export const TransactionsContext = createContext<TransactionContextType>(
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
 
-  async function fetchTransactions(query?: string) {
+  const fetchTransactions = useCallback(async (query?: string) => {
     const response = await api.get('transactions', {
       params: {
         _sort: 'createdAt', // vem do json-server
@@ -44,9 +45,9 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     })
 
     setTransactions(response.data)
-  }
+  }, [])
 
-  async function createTransactions(data: CreateTransactionInput) {
+  const createTransaction = useCallback(async (data: CreateTransactionInput) => {
     const { description, price, category, type } = data
 
     const response = await api.post('transactions', {
@@ -58,18 +59,18 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     })
 
     setTransactions((state) => [response.data, ...state]) // quando faço uma alteração que depende do valor anterior do estado, é bom utilizar callback
-  }
+  }, [])
 
   useEffect(() => {
     fetchTransactions()
-  }, [])
+  }, [fetchTransactions])
 
   return (
     <TransactionsContext.Provider
       value={{
         transactions,
         fetchTransactions,
-        createTransactions,
+        createTransaction,
       }}
     >
       {children}
